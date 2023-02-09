@@ -83,3 +83,14 @@
 @import url(./blocks/login-form/__header/login-form__header.css);
 @import url(./blocks/login-form/__input/login-form__input.css);
 @import url(./blocks/login-form/__submit/login-form__submit.css);
+
+@import url(./blocks/popup/__notice/popup__notice.css);
+@import url(./blocks/popup/__icon/popup__icon.css);
+@import url(./blocks/popup/__sign/popup__sign.css);
+
+
+
+
+
+
+

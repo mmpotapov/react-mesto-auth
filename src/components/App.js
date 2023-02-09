@@ -11,6 +11,7 @@ import AddPlacePopup from './AddPlacePopup';
 import DeletionPopup from './DeletionPopup';
 import Register from './Register';
 import Login from './Login';
+import InfoTooltip from './InfoTooltip';
 
 
 function App() {
@@ -21,6 +22,8 @@ function App() {
   const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = useState(false);
   const [isOpenImagePopupOpen, setIsOpenImagePopupOpen] = useState(false);
   const [isConfirmCardDeletionOpen, setIsConfirmCardDeletionOpen] = useState(false);
+  const [isRegistrationResultPopupOpen, setIsRegistrationResultPopupOpen] = useState(false);
+
   /** Стейты для данных о профиле и списка карточек */
   const [currentUser, setCurrentUser] = useState({});
   const [cards, setCards] = useState([]);
@@ -62,6 +65,7 @@ function App() {
     setIsAddPlacePopupOpen(false);
     setIsOpenImagePopupOpen(false);
     setIsConfirmCardDeletionOpen(false);
+    setIsRegistrationResultPopupOpen(false);
   }
 
   /** Хук эффектов с первичным запросом данных о профиле и массива карточек */
@@ -171,43 +175,46 @@ function App() {
       <div className="root__container">
         {/** Главная страница */}
         <Header />
+        <Main
+          onEditProfile={handleEditProfileClick}
+          onEditAvatar={handleEditAvatarClick}
+          onAddPlace={handleAddPlaceClick}
+          onCardClick={handleCardClick}
+          onCardLike={handleCardLike}
+          onCardDelete={handleDeletionCardClick}
+          cards={cards} />
+        <Footer />
+
+        {/** Попапы */}
+        <EditProfilePopup
+          isOpen={isEditProfilePopupOpen}
+          onClose={closeAllPopups}
+          onUpdateUser={handleUpdateUser} />
+        <EditAvatarPopup
+          isOpen={isEditAvatarPopupOpen}
+          onClose={closeAllPopups}
+          onUpdateAvatar={handleUpdateAvatar} />
+        <AddPlacePopup
+          isOpen={isAddPlacePopupOpen}
+          onClose={closeAllPopups}
+          onAddPlace={handleAddPlaceSubmit} />
+        <ImagePopup
+          isOpen={isOpenImagePopupOpen}
+          onClose={closeAllPopups}
+          card={selectedCard} />
+        <DeletionPopup
+          isOpen={isConfirmCardDeletionOpen}
+          onClose={closeAllPopups}
+          onConfirmDeletion={handleCardDelete}
+          card={selectedCard} />
+        <InfoTooltip
+          isOpen={isRegistrationResultPopupOpen}
+          onClose={closeAllPopups} />
+
+        {/** Формы авторизации и регистрации */}
         <Login />
-        {
-          //         <Register />
+        <Register />
 
-          // <Main
-          //   onEditProfile={handleEditProfileClick}
-          //   onEditAvatar={handleEditAvatarClick}
-          //   onAddPlace={handleAddPlaceClick}
-          //   onCardClick={handleCardClick}
-          //   onCardLike={handleCardLike}
-          //   onCardDelete={handleDeletionCardClick}
-          //   cards={cards} />
-          // <Footer />
-
-          // {/** Попапы */}
-          // <EditProfilePopup
-          //   isOpen={isEditProfilePopupOpen}
-          //   onClose={closeAllPopups}
-          //   onUpdateUser={handleUpdateUser} />
-          // <EditAvatarPopup
-          //   isOpen={isEditAvatarPopupOpen}
-          //   onClose={closeAllPopups}
-          //   onUpdateAvatar={handleUpdateAvatar} />
-          // <AddPlacePopup
-          //   isOpen={isAddPlacePopupOpen}
-          //   onClose={closeAllPopups}
-          //   onAddPlace={handleAddPlaceSubmit} />
-          // <ImagePopup
-          //   isOpen={isOpenImagePopupOpen}
-          //   onClose={closeAllPopups}
-          //   card={selectedCard} />
-          // <DeletionPopup
-          //   isOpen={isConfirmCardDeletionOpen}
-          //   onClose={closeAllPopups}
-          //   onConfirmDeletion={handleCardDelete}
-          //   card={selectedCard} />
-        }
       </div>
     </CurrentUserContext.Provider>
   )

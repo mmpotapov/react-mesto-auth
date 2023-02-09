@@ -5,7 +5,7 @@ function Header() {
 
   const [isAccountInfoOpen, setIsAccountInfoOpen] = useState(false);
 
-  /**   */
+  /** Шторка для экранов смартфонов */
   function handleButtonHideClick() {
     if (isAccountInfoOpen) {
       setIsAccountInfoOpen(false)
