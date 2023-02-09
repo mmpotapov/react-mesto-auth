@@ -1,0 +1,21 @@
+.header__account {
+  display: flex;
+  gap: 24px;
+  align-items: top;
+  font-size: 18px;
+  line-height: 22px;
+}
+
+
+@media screen and (max-width: 935px) {
+  .header__account {
+    margin-right: 27px;
+  }
+}
+
+@media screen and (max-width: 560px) {
+  .header__account {
+    display: none;
+  }
+}
+

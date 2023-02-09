@@ -1,0 +1,8 @@
+.header__button-exit {
+  background-color: transparent;
+  color: #A9A9A9;
+  padding: 0;
+  border: 0;
+  height: 22px;
+  cursor: pointer;
+}
