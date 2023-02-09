@@ -1,28 +1,11 @@
 .header {
   max-width: 880px;
-  min-height: 74px;
   margin: 0 auto;
-  padding-top: 45px;
-  padding-bottom: 36px;
-  box-sizing: border-box;
   border-bottom: 1px solid rgba(84, 84, 84, .7);
   width: 100%;
   display: flex;
-  justify-content: space-between;
-}
-
-@media screen and (max-width: 935px) {
-  .header {
-    padding-top: 28px;
-    min-height: 56px;
-  }
+  flex-direction: column;
 }
 
 
-@media screen and (max-width: 560px) {
-  .header {
-    flex-direction: column-reverse;
-    padding-bottom: 26.5px;
-    padding-top: 0;
-  }
-}
+
