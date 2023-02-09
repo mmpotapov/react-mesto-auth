@@ -70,5 +70,16 @@
 @import url(./blocks/popup/__input/_type/popup__input_type_incorrect.css);
 @import url(./blocks/popup/__error/popup__error.css);
 
+@import url(./blocks/unauthorized/unauthorized.css);
+@import url(./blocks/unauthorized/__form/unauthorized__form.css);
+@import url(./blocks/registration-form/registration-form.css);
+@import url(./blocks/registration-form/__header/registration-form__header.css);
+@import url(./blocks/registration-form/__input/registration-form__input.css);
+@import url(./blocks/registration-form/__submit/registration-form__submit.css);
+@import url(./blocks/unauthorized/__login/unauthorized__login.css);
+@import url(./blocks/unauthorized/__sign/unauthorized__sign.css);
 
-
+@import url(./blocks/login-form/login-form.css);
+@import url(./blocks/login-form/__header/login-form__header.css);
+@import url(./blocks/login-form/__input/login-form__input.css);
+@import url(./blocks/login-form/__submit/login-form__submit.css);

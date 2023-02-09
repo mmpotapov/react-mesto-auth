@@ -9,6 +9,9 @@ import EditProfilePopup from './EditProfilePopup';
 import EditAvatarPopup from './EditAvatarPopup';
 import AddPlacePopup from './AddPlacePopup';
 import DeletionPopup from './DeletionPopup';
+import Register from './Register';
+import Login from './Login';
+
 
 function App() {
 
@@ -168,39 +171,43 @@ function App() {
       <div className="root__container">
         {/** Главная страница */}
         <Header />
-        <Main
-          onEditProfile={handleEditProfileClick}
-          onEditAvatar={handleEditAvatarClick}
-          onAddPlace={handleAddPlaceClick}
-          onCardClick={handleCardClick}
-          onCardLike={handleCardLike}
-          onCardDelete={handleDeletionCardClick}
-          cards={cards} />
-        <Footer />
+        <Login />
+        {
+          //         <Register />
 
-        {/** Попапы */}
-        <EditProfilePopup
-          isOpen={isEditProfilePopupOpen}
-          onClose={closeAllPopups}
-          onUpdateUser={handleUpdateUser} />
-        <EditAvatarPopup
-          isOpen={isEditAvatarPopupOpen}
-          onClose={closeAllPopups}
-          onUpdateAvatar={handleUpdateAvatar} />
-        <AddPlacePopup
-          isOpen={isAddPlacePopupOpen}
-          onClose={closeAllPopups}
-          onAddPlace={handleAddPlaceSubmit} />
-        <ImagePopup
-          isOpen={isOpenImagePopupOpen}
-          onClose={closeAllPopups}
-          card={selectedCard} />
-        <DeletionPopup
-          isOpen={isConfirmCardDeletionOpen}
-          onClose={closeAllPopups}
-          onConfirmDeletion={handleCardDelete}
-          card={selectedCard} />
+          // <Main
+          //   onEditProfile={handleEditProfileClick}
+          //   onEditAvatar={handleEditAvatarClick}
+          //   onAddPlace={handleAddPlaceClick}
+          //   onCardClick={handleCardClick}
+          //   onCardLike={handleCardLike}
+          //   onCardDelete={handleDeletionCardClick}
+          //   cards={cards} />
+          // <Footer />
 
+          // {/** Попапы */}
+          // <EditProfilePopup
+          //   isOpen={isEditProfilePopupOpen}
+          //   onClose={closeAllPopups}
+          //   onUpdateUser={handleUpdateUser} />
+          // <EditAvatarPopup
+          //   isOpen={isEditAvatarPopupOpen}
+          //   onClose={closeAllPopups}
+          //   onUpdateAvatar={handleUpdateAvatar} />
+          // <AddPlacePopup
+          //   isOpen={isAddPlacePopupOpen}
+          //   onClose={closeAllPopups}
+          //   onAddPlace={handleAddPlaceSubmit} />
+          // <ImagePopup
+          //   isOpen={isOpenImagePopupOpen}
+          //   onClose={closeAllPopups}
+          //   card={selectedCard} />
+          // <DeletionPopup
+          //   isOpen={isConfirmCardDeletionOpen}
+          //   onClose={closeAllPopups}
+          //   onConfirmDeletion={handleCardDelete}
+          //   card={selectedCard} />
+        }
       </div>
     </CurrentUserContext.Provider>
   )
