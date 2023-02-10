@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { CurrentUserContext } from '../contexts/CurrentUserContext.js';
 import { api } from '../utils/Api.js';
+import { authApi } from '../utils/Auth.js';
 import { Route, Routes, Navigate } from 'react-router-dom';
 import Header from './Header';
 import Main from './Main';
