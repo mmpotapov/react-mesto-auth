@@ -31,6 +31,9 @@ function App() {
   const [currentUser, setCurrentUser] = useState({});
   const [cards, setCards] = useState([]);
 
+  const [isAuthorizedUser, setIsAuthorizedUser] = useState(false);
+  const [currentEmail, setCurrentEmail] = useState("");
+
   /** Открыть попап изменения профиля (изменить переменную состояния на true) */
   const handleEditProfileClick = () => {
     setIsEditProfilePopupOpen(true);
@@ -71,17 +74,31 @@ function App() {
     setIsRegistrationResultPopupOpen(false);
   }
 
+  /** Хук эффектов с первичной проверкой токена при загрузке страницы */
+  useEffect(() => {
+    const jwt = localStorage.getItem("jwt");
+    if (jwt) {
+      authApi.checkToken(jwt)
+        .then((res) => {
+          setCurrentEmail(res.data.email);
+          setIsAuthorizedUser(true);
+        });
+    }
+  }, []);
+
   /** Хук эффектов с первичным запросом данных о профиле и массива карточек */
   useEffect(() => {
-    Promise.all([api.getProfile(), api.getInitialCards()])
-      .then(([profileInfo, cardList]) => {
-        setCurrentUser(profileInfo);
-        setCards(cardList);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }, [])
+    if (isAuthorizedUser) {
+      Promise.all([api.getProfile(), api.getInitialCards()])
+        .then(([profileInfo, cardList]) => {
+          setCurrentUser(profileInfo);
+          setCards(cardList);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  }, [isAuthorizedUser])
 
   /** Функция-реакция нажатия на лайк */
   function handleCardLike(card) {
@@ -173,27 +190,67 @@ function App() {
       })
   }
 
-  const TEMP_SUCCESS_AUTH = true;
+  /** Функция-реакция на submit формы регистрации */
+  function handleRegister(inputs) {
+    /** Отправь на сервер email и пароль нового юзера */
+    authApi.register(inputs.password, inputs.email)
+      .then((res) => {
+        /** Покажи на экране попап с успешной регистрацией */
+      })
+      .catch((err) => {
+        /** Покажи на экране попап с проваленной регистрацией */
+        console.log(err);
+      })
+  }
+
+  /** Функция-реакция на submit формы авторизации  */
+  function handleLogin(inputs) {
+    /** Отправь на сервер email и пароль */
+    authApi.login(inputs.password, inputs.email)
+      .then((data) => {
+        localStorage.setItem('jwt', data.token);
+        setIsAuthorizedUser(true);
+      })
+      .catch((err) => {
+        /** Покажи на экране попап с проваленным входом */
+        console.log(err);
+      })
+  }
+
+  /** Функция-реакция на Выход (удаление JWT и логаут) */
+  function handleLogout() {
+    localStorage.removeItem('jwt');
+    setIsAuthorizedUser(false);
+  }
 
   return (
     <CurrentUserContext.Provider value={currentUser}>
       <div className="root__container">
-        <Header loggedIn={TEMP_SUCCESS_AUTH}/>
+        <Header
+          loggedIn={isAuthorizedUser}
+          onLogout={handleLogout}
+          currentEmail={currentEmail} />
         <Routes>
-          <Route path="/sign-up" element={<Register loggedIn={TEMP_SUCCESS_AUTH} />} />
-          <Route path="/sign-in" element={<Login loggedIn={TEMP_SUCCESS_AUTH} />} />
-          <Route path="/" element={<ProtectedRoute element={Main}
-            onEditProfile={handleEditProfileClick}
-            onEditAvatar={handleEditAvatarClick}
-            onAddPlace={handleAddPlaceClick}
-            onCardClick={handleCardClick}
-            onCardLike={handleCardLike}
-            onCardDelete={handleDeletionCardClick}
-            cards={cards} loggedIn={TEMP_SUCCESS_AUTH} />} />
+          <Route path="/sign-up" element={
+            <Register
+              loggedIn={isAuthorizedUser}
+              onRegisterUser={handleRegister} />} />
+          <Route path="/sign-in" element={
+            <Login
+              loggedIn={isAuthorizedUser}
+              onLogin={handleLogin} />} />
+          <Route path="/" element={
+            <ProtectedRoute element={Main}
+              onEditProfile={handleEditProfileClick}
+              onEditAvatar={handleEditAvatarClick}
+              onAddPlace={handleAddPlaceClick}
+              onCardClick={handleCardClick}
+              onCardLike={handleCardLike}
+              onCardDelete={handleDeletionCardClick}
+              cards={cards} loggedIn={isAuthorizedUser} />} />
           <Route path="*" element={<Navigate to="/" replace />} />
-
         </Routes>
-        {TEMP_SUCCESS_AUTH && <Footer />}
+        {isAuthorizedUser && <Footer />}
 
         {/** Попапы */}
         <EditProfilePopup
