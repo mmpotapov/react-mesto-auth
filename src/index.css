@@ -16,7 +16,6 @@
 @import url(./blocks/header/__mobile/header__mobile.css);
 @import url(./blocks/header/__mobile/_active/header__mobile_active.css);
 
-
 @import url(./blocks/content/content.css);
 @import url(./blocks/profile/profile.css);
 @import url(./blocks/profile/__account/profile__account.css);
@@ -89,4 +88,5 @@
 @import url(./blocks/popup/__icon/popup__icon.css);
 @import url(./blocks/popup/__sign/popup__sign.css);
 
+@import url(./blocks/header/__button-profile/_unauthorized/header__button-profile_unauthorized.css);
 

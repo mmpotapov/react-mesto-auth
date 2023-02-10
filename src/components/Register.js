@@ -1,6 +1,9 @@
-function Register() {
+import { Link } from 'react-router-dom'
+import { Navigate } from "react-router-dom";
 
-  return (
+
+function Register(props) {
+  return props.loggedIn ? (<Navigate to="/" replace />) : (
     <main className="content">
       <section className="unauthorized" aria-label="Регистрация">
         <form className="unauthorized__form registration-form" name="registration-form">
@@ -19,7 +22,7 @@ function Register() {
             placeholder="Пароль" />
             <button type="submit" className="registration-form__submit">Зарегистрироваться</button>
         </form>
-        <p className="unauthorized__sign">Уже зарегистрированы? <a className="unauthorized__login" href="#0">Войти</a></p>
+        <p className="unauthorized__sign">Уже зарегистрированы? <Link className="unauthorized__login" to="/sign-in">Войти</Link></p>
       </section>
     </main>
   )

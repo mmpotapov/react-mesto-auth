@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { CurrentUserContext } from '../contexts/CurrentUserContext.js';
 import { api } from '../utils/Api.js';
+import { Route, Routes, Navigate } from 'react-router-dom';
 import Header from './Header';
 import Main from './Main';
 import Footer from './Footer';
@@ -12,6 +13,7 @@ import DeletionPopup from './DeletionPopup';
 import Register from './Register';
 import Login from './Login';
 import InfoTooltip from './InfoTooltip';
+import ProtectedRoute from './ProtectedRoute';
 
 
 function App() {
@@ -170,20 +172,27 @@ function App() {
       })
   }
 
+  const TEMP_SUCCESS_AUTH = true;
+
   return (
     <CurrentUserContext.Provider value={currentUser}>
       <div className="root__container">
-        {/** Главная страница */}
-        <Header />
-        <Main
-          onEditProfile={handleEditProfileClick}
-          onEditAvatar={handleEditAvatarClick}
-          onAddPlace={handleAddPlaceClick}
-          onCardClick={handleCardClick}
-          onCardLike={handleCardLike}
-          onCardDelete={handleDeletionCardClick}
-          cards={cards} />
-        <Footer />
+        <Header loggedIn={TEMP_SUCCESS_AUTH}/>
+        <Routes>
+          <Route path="/sign-up" element={<Register loggedIn={TEMP_SUCCESS_AUTH} />} />
+          <Route path="/sign-in" element={<Login loggedIn={TEMP_SUCCESS_AUTH} />} />
+          <Route path="/" element={<ProtectedRoute element={Main}
+            onEditProfile={handleEditProfileClick}
+            onEditAvatar={handleEditAvatarClick}
+            onAddPlace={handleAddPlaceClick}
+            onCardClick={handleCardClick}
+            onCardLike={handleCardLike}
+            onCardDelete={handleDeletionCardClick}
+            cards={cards} loggedIn={TEMP_SUCCESS_AUTH} />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
+
+        </Routes>
+        {TEMP_SUCCESS_AUTH && <Footer />}
 
         {/** Попапы */}
         <EditProfilePopup
@@ -210,11 +219,6 @@ function App() {
         <InfoTooltip
           isOpen={isRegistrationResultPopupOpen}
           onClose={closeAllPopups} />
-
-        {/** Формы авторизации и регистрации */}
-        <Login />
-        <Register />
-
       </div>
     </CurrentUserContext.Provider>
   )

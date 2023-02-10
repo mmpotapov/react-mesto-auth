@@ -1,6 +1,9 @@
-function Login() {
+import { Navigate } from "react-router-dom";
 
-  return (
+
+function Login(props) {
+
+  return props.loggedIn ? (<Navigate to="/" replace />) : (
     <main className="content">
       <section className="unauthorized" aria-label="Вход">
         <form className="unauthorized__form login-form" name="login-form">

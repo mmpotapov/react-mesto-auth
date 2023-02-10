@@ -20,5 +20,8 @@
   .header__account .header__button-profile {
     display: none;
   }
+  .header__account .header__button-profile_unauthorized {
+    display: block;
+  }
 }
 
