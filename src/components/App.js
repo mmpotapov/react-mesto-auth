@@ -34,6 +34,7 @@ function App() {
   /** Стейты для данных о авторизации и регистрации */
   const [isAuthorizedUser, setIsAuthorizedUser] = useState(false);
   const [isSuccessfulRegistration, setIsSuccessfulRegistration] = useState(false);
+  const [isRegistrationMessage, setIsRegistrationMessage] = useState("");
 
   /** Хук useNavigate */
   const navigate = useNavigate();
@@ -83,6 +84,9 @@ function App() {
         .then((res) => {
           setCurrentEmail(res.data.email);
           setIsAuthorizedUser(true);
+        })
+        .catch((err) => {
+          console.log(err);
         });
     }
   }, []);
@@ -107,12 +111,14 @@ function App() {
     authApi.register(inputs.password, inputs.email)
       .then(() => {
         /** Открой попап с уведомлением об успешной регистрации */
+        setIsRegistrationMessage("Вы успешно зарегистрировались!");
         setIsSuccessfulRegistration(true);
         setIsRegistrationResultPopupOpen(true);
         navigate('/sign-in');
       })
       .catch((err) => {
         /** Открой попап с уведомлением о проблеме */
+        setIsRegistrationMessage("Что-то пошло не так! Попробуйте ещё раз.");
         setIsSuccessfulRegistration(false);
         setIsRegistrationResultPopupOpen(true);
         console.log(err);
@@ -131,6 +137,7 @@ function App() {
       })
       .catch((err) => {
         /** Открой попап с уведомлением о проблеме */
+        setIsRegistrationMessage("Что-то пошло не так! Попробуйте ещё раз.");
         setIsSuccessfulRegistration(false);
         setIsRegistrationResultPopupOpen(true);
         console.log(err);
@@ -289,6 +296,7 @@ function App() {
         <InfoTooltip
           isOpen={isRegistrationResultPopupOpen}
           isSuccess={isSuccessfulRegistration}
+          isTextMessage={isRegistrationMessage}
           onClose={closeAllPopups} />
       </div>
     </CurrentUserContext.Provider>
