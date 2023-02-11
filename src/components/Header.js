@@ -1,12 +1,11 @@
-import logo from '../images/logo.svg'
 import { useState } from 'react';
 import { Routes, Route, Link } from "react-router-dom";
-
+import logo from '../images/logo.svg'
 
 function Header(props) {
 
-  const [isAccountInfoOpen, setIsAccountInfoOpen] = useState(false);
   /** Шторка для экранов смартфонов */
+  const [isAccountInfoOpen, setIsAccountInfoOpen] = useState(false);
   function handleButtonHideClick() {
     if (isAccountInfoOpen) {
       setIsAccountInfoOpen(false)

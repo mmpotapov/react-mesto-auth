@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
-import { CurrentUserContext } from '../contexts/CurrentUserContext.js';
+import { Route, Routes, Navigate, useNavigate } from 'react-router-dom';
 import { api } from '../utils/Api.js';
 import { authApi } from '../utils/Auth.js';
-import { Route, Routes, Navigate } from 'react-router-dom';
+import { CurrentUserContext } from '../contexts/CurrentUserContext.js';
 import Header from './Header';
 import Main from './Main';
 import Footer from './Footer';
@@ -16,7 +16,6 @@ import Login from './Login';
 import InfoTooltip from './InfoTooltip';
 import ProtectedRoute from './ProtectedRoute';
 
-
 function App() {
 
   /** Хуки для изменения состояние попапов (открыт/не открыт) */
@@ -26,13 +25,18 @@ function App() {
   const [isOpenImagePopupOpen, setIsOpenImagePopupOpen] = useState(false);
   const [isConfirmCardDeletionOpen, setIsConfirmCardDeletionOpen] = useState(false);
   const [isRegistrationResultPopupOpen, setIsRegistrationResultPopupOpen] = useState(false);
-
   /** Стейты для данных о профиле и списка карточек */
   const [currentUser, setCurrentUser] = useState({});
   const [cards, setCards] = useState([]);
-
-  const [isAuthorizedUser, setIsAuthorizedUser] = useState(false);
   const [currentEmail, setCurrentEmail] = useState("");
+  /** Стейт для хранения выбранной карточки */
+  const [selectedCard, setSelectedCard] = useState({});
+  /** Стейты для данных о авторизации и регистрации */
+  const [isAuthorizedUser, setIsAuthorizedUser] = useState(false);
+  const [isSuccessfulRegistration, setIsSuccessfulRegistration] = useState(false);
+
+  /** Хук useNavigate */
+  const navigate = useNavigate();
 
   /** Открыть попап изменения профиля (изменить переменную состояния на true) */
   const handleEditProfileClick = () => {
@@ -48,9 +52,6 @@ function App() {
   const handleAddPlaceClick = () => {
     setIsAddPlacePopupOpen(true);
   }
-
-  /** Хук для хранения выбранной карточки */
-  const [selectedCard, setSelectedCard] = useState({});
 
   /** Открыть попап с подтверждением удаления + изменить объект текущей карточки */
   const handleDeletionCardClick = (cardObject) => {
@@ -74,7 +75,7 @@ function App() {
     setIsRegistrationResultPopupOpen(false);
   }
 
-  /** Хук эффектов с первичной проверкой токена при загрузке страницы */
+  /** Первичная проверка токена при загрузке страницы */
   useEffect(() => {
     const jwt = localStorage.getItem("jwt");
     if (jwt) {
@@ -86,7 +87,7 @@ function App() {
     }
   }, []);
 
-  /** Хук эффектов с первичным запросом данных о профиле и массива карточек */
+  /** Запрос данных о профиле и запрос массива карточек */
   useEffect(() => {
     if (isAuthorizedUser) {
       Promise.all([api.getProfile(), api.getInitialCards()])
@@ -99,6 +100,48 @@ function App() {
         });
     }
   }, [isAuthorizedUser])
+
+  /** Функция-реакция на submit формы регистрации */
+  function handleRegister(inputs) {
+    /** Отправь на сервер email и пароль нового юзера */
+    authApi.register(inputs.password, inputs.email)
+      .then(() => {
+        /** Открой попап с уведомлением об успешной регистрации */
+        setIsSuccessfulRegistration(true);
+        setIsRegistrationResultPopupOpen(true);
+        navigate('/sign-in');
+      })
+      .catch((err) => {
+        /** Открой попап с уведомлением о проблеме */
+        setIsSuccessfulRegistration(false);
+        setIsRegistrationResultPopupOpen(true);
+        console.log(err);
+      })
+  }
+
+  /** Функция-реакция на submit формы авторизации  */
+  function handleLogin(inputs) {
+    /** Отправь на сервер email и пароль */
+    authApi.login(inputs.password, inputs.email)
+      .then((data) => {
+        /** Сохрани полученный jwt */
+        localStorage.setItem('jwt', data.token);
+        setCurrentEmail(inputs.email);
+        setIsAuthorizedUser(true);
+      })
+      .catch((err) => {
+        /** Открой попап с уведомлением о проблеме */
+        setIsSuccessfulRegistration(false);
+        setIsRegistrationResultPopupOpen(true);
+        console.log(err);
+      })
+  }
+
+  /** Функция-реакция на Выход (удаление JWT и логаут) */
+  function handleLogout() {
+    localStorage.removeItem('jwt');
+    setIsAuthorizedUser(false);
+  }
 
   /** Функция-реакция нажатия на лайк */
   function handleCardLike(card) {
@@ -190,39 +233,6 @@ function App() {
       })
   }
 
-  /** Функция-реакция на submit формы регистрации */
-  function handleRegister(inputs) {
-    /** Отправь на сервер email и пароль нового юзера */
-    authApi.register(inputs.password, inputs.email)
-      .then((res) => {
-        /** Покажи на экране попап с успешной регистрацией */
-      })
-      .catch((err) => {
-        /** Покажи на экране попап с проваленной регистрацией */
-        console.log(err);
-      })
-  }
-
-  /** Функция-реакция на submit формы авторизации  */
-  function handleLogin(inputs) {
-    /** Отправь на сервер email и пароль */
-    authApi.login(inputs.password, inputs.email)
-      .then((data) => {
-        localStorage.setItem('jwt', data.token);
-        setIsAuthorizedUser(true);
-      })
-      .catch((err) => {
-        /** Покажи на экране попап с проваленным входом */
-        console.log(err);
-      })
-  }
-
-  /** Функция-реакция на Выход (удаление JWT и логаут) */
-  function handleLogout() {
-    localStorage.removeItem('jwt');
-    setIsAuthorizedUser(false);
-  }
-
   return (
     <CurrentUserContext.Provider value={currentUser}>
       <div className="root__container">
@@ -240,14 +250,16 @@ function App() {
               loggedIn={isAuthorizedUser}
               onLogin={handleLogin} />} />
           <Route path="/" element={
-            <ProtectedRoute element={Main}
+            <ProtectedRoute
+              element={Main}
               onEditProfile={handleEditProfileClick}
               onEditAvatar={handleEditAvatarClick}
               onAddPlace={handleAddPlaceClick}
               onCardClick={handleCardClick}
               onCardLike={handleCardLike}
               onCardDelete={handleDeletionCardClick}
-              cards={cards} loggedIn={isAuthorizedUser} />} />
+              cards={cards}
+              loggedIn={isAuthorizedUser} />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
         {isAuthorizedUser && <Footer />}
@@ -276,6 +288,7 @@ function App() {
           card={selectedCard} />
         <InfoTooltip
           isOpen={isRegistrationResultPopupOpen}
+          isSuccess={isSuccessfulRegistration}
           onClose={closeAllPopups} />
       </div>
     </CurrentUserContext.Provider>

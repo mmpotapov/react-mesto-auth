@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { Navigate } from "react-router-dom";
 
-
 function Login(props) {
 
   /** Управляемый компонент для полей ввода */
@@ -17,7 +16,7 @@ function Login(props) {
     setPassword(evt.target.value);
   }
 
-  /** Отдать в props.onRegisterUser введённые email и password и вызвать функцию с ними */
+  /** Отдать в props.onLogin введённые email и password и вызвать функцию с ними */
   function handleSubmit(evt) {
     evt.preventDefault();
     props.onLogin({
